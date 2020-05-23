@@ -5,6 +5,7 @@ import (
 
 	"wasm.go/binary"
 	"wasm.go/instance"
+	"wasm.go/validator"
 )
 
 type WasmVal = instance.WasmVal
@@ -22,6 +23,10 @@ type vm struct {
 
 func New(m binary.Module, mm map[string]instance.Module,
 ) (inst instance.Module, err error) {
+
+	if err := validator.Validate(m); err != nil {
+		return nil, err
+	}
 
 	defer func() {
 		if _err := recover(); _err != nil {
@@ -106,7 +111,8 @@ func (vm *vm) initMem() {
 	}
 	for _, data := range vm.module.DataSec {
 		vm.execConstExpr(data.Offset)
-		vm.memory.Write(vm.popU64(), data.Init)
+		offset := vm.popU64() // TODO: check offset
+		vm.memory.Write(offset, data.Init)
 	}
 }
 func (vm *vm) initGlobals() {
@@ -129,7 +135,7 @@ func (vm *vm) initTable() {
 	}
 	for _, elem := range vm.module.ElemSec {
 		vm.execConstExpr(elem.Offset)
-		offset := vm.popU32()
+		offset := vm.popU32() // TODO: check offset
 		for i, funcIdx := range elem.Init {
 			vm.table.SetElem(offset+uint32(i), vm.funcs[funcIdx])
 		}

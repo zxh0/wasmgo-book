@@ -72,7 +72,7 @@ func call(vm *vm, args interface{}) {
 }
 
 func callFunc(vm *vm, f vmFunc) {
-	if f.goFunc != nil {
+	if f._func != nil {
 		callExternalFunc(vm, f)
 	} else {
 		callInternalFunc(vm, f)
@@ -81,7 +81,10 @@ func callFunc(vm *vm, f vmFunc) {
 
 func callExternalFunc(vm *vm, f vmFunc) {
 	args := popArgs(vm, f._type)
-	results := f.goFunc(args)
+	results, err := f._func.Call(args...)
+	if err != nil {
+		panic(err)
+	}
 	pushResults(vm, f._type, results)
 }
 
@@ -137,9 +140,22 @@ func callIndirect(vm *vm, args interface{}) {
 	}
 
 	f := vm.table.GetElem(i)
-	if f._type.GetSignature() != ft.GetSignature() {
+	if f.Type().GetSignature() != ft.GetSignature() {
 		panic(errTypeMismatch)
 	}
 
-	callFunc(vm, f)
+	// optimize internal func call
+	if _f, ok := f.(vmFunc); ok {
+		if _f._func == nil && _f.vm == vm {
+			callInternalFunc(vm, _f)
+			return
+		}
+	}
+
+	fcArgs := popArgs(vm, ft)
+	results, err := f.Call(fcArgs...)
+	if err != nil {
+		panic(err)
+	}
+	pushResults(vm, ft, results)
 }

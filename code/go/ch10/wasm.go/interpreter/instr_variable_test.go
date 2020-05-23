@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"testing"
+	"wasm.go/instance"
 
 	"github.com/stretchr/testify/require"
 	"wasm.go/binary"
@@ -22,7 +23,7 @@ func TestLocal(t *testing.T) {
 }
 
 func TestGlobal(t *testing.T) {
-	vm := &vm{globals: []*globalVar{
+	vm := &vm{globals: []instance.Global{
 		newGlobal(binary.GlobalType{Mut: 1}, 100),
 		newGlobal(binary.GlobalType{Mut: 1}, 200),
 		newGlobal(binary.GlobalType{Mut: 1}, 300),

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"wasm.go/binary"
+	"wasm.go/instance"
 	"wasm.go/interpreter"
 )
 
@@ -26,6 +27,18 @@ func main() {
 	if *dumpFlag {
 		dump(module)
 	} else {
-		interpreter.ExecMainFunc(module)
+		instantiateAndExecMainFunc(module)
+	}
+}
+
+func instantiateAndExecMainFunc(module binary.Module) {
+	mm := map[string]instance.Module{"env": newEnv()}
+	m, err := interpreter.New(module, mm)
+	if err == nil {
+		_, err = m.InvokeFunc("main")
+	}
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 }

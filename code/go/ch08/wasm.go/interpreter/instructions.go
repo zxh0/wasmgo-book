@@ -7,7 +7,15 @@ type instrFn = func(vm *vm, args interface{})
 var instrTable = make([]instrFn, 256)
 
 func init() {
+	instrTable[binary.Unreachable] = unreachable
+	instrTable[binary.Nop] = nop
+	instrTable[binary.Block] = block
+	instrTable[binary.Loop] = loop
+	instrTable[binary.If] = _if
+	instrTable[binary.Br] = br
 	instrTable[binary.BrIf] = brIf
+	instrTable[binary.BrTable] = brTable
+	instrTable[binary.Return] = _return
 	instrTable[binary.Call] = call
 	instrTable[binary.Drop] = drop
 	instrTable[binary.Select] = _select

@@ -67,6 +67,11 @@ func (vm *vm) clearBlock(cf *controlFrame) {
 		vm.local0Idx = uint32(lastCallFrame.bp)
 	}
 }
+func (vm *vm) resetBlock(cf *controlFrame) {
+	results := vm.popU64s(len(cf.bt.ParamTypes))
+	vm.popU64s(vm.stackSize() - cf.bp)
+	vm.pushU64s(results)
+}
 
 /* loop */
 

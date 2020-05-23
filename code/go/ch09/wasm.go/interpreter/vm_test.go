@@ -40,6 +40,26 @@ func TestLocalVar(t *testing.T) {
 	require.Equal(t, uint64(7), stack.getOperand(1))
 }
 
+func TestTable(t *testing.T) {
+	limits := binary.Limits{Min: 10, Max: 20}
+	table := newTable(binary.TableType{Limits: limits})
+
+	fs := []vmFunc{
+		{_type: binary.FuncType{ParamTypes: []binary.ValType{binary.ValTypeI32}}},
+		{_type: binary.FuncType{ParamTypes: []binary.ValType{binary.ValTypeI64}}},
+		{_type: binary.FuncType{ParamTypes: []binary.ValType{binary.ValTypeF32}}},
+		{_type: binary.FuncType{ParamTypes: []binary.ValType{binary.ValTypeF64}}},
+	}
+	table.SetElem(6, fs[0])
+	table.SetElem(7, fs[1])
+	table.SetElem(8, fs[2])
+	table.SetElem(9, fs[3])
+	require.Equal(t, fs[0], table.GetElem(6))
+	require.Equal(t, fs[1], table.GetElem(7))
+	require.Equal(t, fs[2], table.GetElem(8))
+	require.Equal(t, fs[3], table.GetElem(9))
+}
+
 func TestMem(t *testing.T) {
 	mem := newMemory(binary.MemType{Min: 1})
 

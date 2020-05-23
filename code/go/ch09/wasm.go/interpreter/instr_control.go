@@ -1,10 +1,6 @@
 package interpreter
 
-import (
-	"fmt"
-
-	"wasm.go/binary"
-)
+import "wasm.go/binary"
 
 func unreachable(vm *vm, _ interface{}) {
 	panic(errTrap)
@@ -71,12 +67,39 @@ func _return(vm *vm, _ interface{}) {
 }
 
 func call(vm *vm, args interface{}) {
-	idx := int(args.(uint32))
-	importedFuncCount := len(vm.module.ImportSec) // TODO
-	if idx < importedFuncCount {
-		callAssertFunc(vm, args) // hack!
+	f := vm.funcs[args.(uint32)]
+	callFunc(vm, f)
+}
+
+func callFunc(vm *vm, f vmFunc) {
+	if f.goFunc != nil {
+		callExternalFunc(vm, f)
 	} else {
-		callInternalFunc(vm, idx-importedFuncCount)
+		callInternalFunc(vm, f)
+	}
+}
+
+func callExternalFunc(vm *vm, f vmFunc) {
+	args := popArgs(vm, f._type)
+	results := f.goFunc(args)
+	pushResults(vm, f._type, results)
+}
+
+func popArgs(vm *vm, ft binary.FuncType) []interface{} {
+	paramCount := len(ft.ParamTypes)
+	args := make([]interface{}, paramCount)
+	for i := paramCount - 1; i >= 0; i-- {
+		args[i] = wrapU64(ft.ParamTypes[i], vm.popU64())
+	}
+	return args
+}
+
+func pushResults(vm *vm, ft binary.FuncType, results []interface{}) {
+	if len(ft.ResultTypes) != len(results) {
+		panic("TODO")
+	}
+	for _, result := range results {
+		vm.pushU64(unwrapU64(ft.ResultTypes[0], result))
 	}
 }
 
@@ -94,42 +117,29 @@ operand stack:
 +---------------+
 |  ............ |
 */
-func callInternalFunc(vm *vm, idx int) {
-	ftIdx := vm.module.FuncSec[idx]
-	ft := vm.module.TypeSec[ftIdx]
-	code := vm.module.CodeSec[idx]
-	vm.enterBlock(binary.Call, ft, code.Expr)
+func callInternalFunc(vm *vm, f vmFunc) {
+	vm.enterBlock(binary.Call, f._type, f.code.Expr)
 
 	// alloc locals
-	localCount := int(code.GetLocalCount())
+	localCount := int(f.code.GetLocalCount())
 	for i := 0; i < localCount; i++ {
 		vm.pushU64(0)
 	}
 }
 
-// hack!
-func callAssertFunc(vm *vm, args interface{}) {
-	idx := args.(uint32)
-	switch vm.module.ImportSec[idx].Name {
-	case "assert_true":
-		assertEq(vm.popBool(), true)
-	case "assert_false":
-		assertEq(vm.popBool(), false)
-	case "assert_eq_i32":
-		assertEq(vm.popU32(), vm.popU32())
-	case "assert_eq_i64":
-		assertEq(vm.popU64(), vm.popU64())
-	case "assert_eq_f32":
-		assertEq(vm.popF32(), vm.popF32())
-	case "assert_eq_f64":
-		assertEq(vm.popF64(), vm.popF64())
-	default:
-		panic("TODO")
-	}
-}
+func callIndirect(vm *vm, args interface{}) {
+	typeIdx := args.(uint32)
+	ft := vm.module.TypeSec[typeIdx]
 
-func assertEq(a, b interface{}) {
-	if a != b {
-		panic(fmt.Errorf("%v != %v", a, b))
+	i := vm.popU32()
+	if i >= vm.table.Size() {
+		panic(errUndefinedElem)
 	}
+
+	f := vm.table.GetElem(i)
+	if f._type.GetSignature() != ft.GetSignature() {
+		panic(errTypeMismatch)
+	}
+
+	callFunc(vm, f)
 }

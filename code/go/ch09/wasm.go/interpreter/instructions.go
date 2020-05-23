@@ -17,6 +17,7 @@ func init() {
 	instrTable[binary.BrTable] = brTable
 	instrTable[binary.Return] = _return
 	instrTable[binary.Call] = call
+	instrTable[binary.CallIndirect] = callIndirect
 	instrTable[binary.Drop] = drop
 	instrTable[binary.Select] = _select
 	instrTable[binary.LocalGet] = localGet

@@ -6,15 +6,19 @@ import (
 
 type vm struct {
 	operandStack
-	module binary.Module
-	memory *memory
+	controlStack
+	module    binary.Module
+	memory    *memory
+	globals   []*globalVar
+	local0Idx uint32
 }
 
 func ExecMainFunc(module binary.Module) {
-	idx := int(*module.StartSec) - len(module.ImportSec)
 	vm := &vm{module: module}
 	vm.initMem()
-	vm.execCode(idx)
+	vm.initGlobals()
+	call(vm, *module.StartSec)
+	vm.loop()
 }
 
 func (vm *vm) initMem() {
@@ -28,11 +32,55 @@ func (vm *vm) initMem() {
 		vm.memory.Write(vm.popU64(), data.Init)
 	}
 }
+func (vm *vm) initGlobals() {
+	for _, global := range vm.module.GlobalSec {
+		for _, instr := range global.Init {
+			vm.execInstr(instr)
+		}
+		vm.globals = append(vm.globals,
+			newGlobal(global.Type, vm.popU64()))
+	}
+}
 
-func (vm *vm) execCode(idx int) {
-	code := vm.module.CodeSec[idx]
-	for _, instr := range code.Expr {
-		vm.execInstr(instr)
+/* block stack */
+
+func (vm *vm) enterBlock(opcode byte,
+	bt binary.FuncType, instrs []binary.Instruction) {
+
+	bp := vm.stackSize() - len(bt.ParamTypes)
+	cf := newControlFrame(opcode, bt, instrs, bp)
+	vm.pushControlFrame(cf)
+	if opcode == binary.Call {
+		vm.local0Idx = uint32(bp)
+	}
+}
+func (vm *vm) exitBlock() {
+	cf := vm.popControlFrame()
+	vm.clearBlock(cf)
+}
+func (vm *vm) clearBlock(cf *controlFrame) {
+	results := vm.popU64s(len(cf.bt.ResultTypes))
+	vm.popU64s(vm.stackSize() - cf.bp)
+	vm.pushU64s(results)
+	if cf.opcode == binary.Call && vm.controlDepth() > 0 {
+		lastCallFrame, _ := vm.topCallFrame()
+		vm.local0Idx = uint32(lastCallFrame.bp)
+	}
+}
+
+/* loop */
+
+func (vm *vm) loop() {
+	depth := vm.controlDepth()
+	for vm.controlDepth() >= depth {
+		cf := vm.topControlFrame()
+		if cf.pc == len(cf.instrs) {
+			vm.exitBlock()
+		} else {
+			instr := cf.instrs[cf.pc]
+			cf.pc++
+			vm.execInstr(instr)
+		}
 	}
 }
 

@@ -7,9 +7,15 @@ type instrFn = func(vm *vm, args interface{})
 var instrTable = make([]instrFn, 256)
 
 func init() {
-	instrTable[binary.Call] = call // hack!
+	instrTable[binary.BrIf] = brIf
+	instrTable[binary.Call] = call
 	instrTable[binary.Drop] = drop
 	instrTable[binary.Select] = _select
+	instrTable[binary.LocalGet] = localGet
+	instrTable[binary.LocalSet] = localSet
+	instrTable[binary.LocalTee] = localTee
+	instrTable[binary.GlobalGet] = globalGet
+	instrTable[binary.GlobalSet] = globalSet
 	instrTable[binary.I32Load] = i32Load
 	instrTable[binary.I64Load] = i64Load
 	instrTable[binary.F32Load] = f32Load

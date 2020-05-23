@@ -6,6 +6,26 @@ type operandStack struct {
 	slots []uint64
 }
 
+func (s *operandStack) stackSize() int {
+	return len(s.slots)
+}
+
+func (s *operandStack) getOperand(idx uint32) uint64 {
+	return s.slots[idx]
+}
+func (s *operandStack) setOperand(idx uint32, val uint64) {
+	s.slots[idx] = val
+}
+
+func (s *operandStack) pushU64s(vals []uint64) {
+	s.slots = append(s.slots, vals...)
+}
+func (s *operandStack) popU64s(n int) []uint64 {
+	vals := s.slots[len(s.slots)-n:]
+	s.slots = s.slots[:len(s.slots)-n]
+	return vals
+}
+
 func (s *operandStack) pushU64(val uint64) {
 	s.slots = append(s.slots, val)
 }

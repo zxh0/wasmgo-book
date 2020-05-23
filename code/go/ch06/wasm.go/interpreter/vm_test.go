@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"wasm.go/binary"
 )
 
 func TestOperandStack(t *testing.T) {
@@ -26,4 +27,17 @@ func TestOperandStack(t *testing.T) {
 	require.Equal(t, false, stack.popBool())
 	require.Equal(t, true, stack.popBool())
 	require.Equal(t, 0, len(stack.slots))
+}
+
+func TestMem(t *testing.T) {
+	mem := newMemory(binary.MemType{Min: 1})
+
+	buf := []byte{0x01, 0x02, 0x03}
+	mem.Write(10, buf)
+	mem.Read(11, buf)
+	require.Equal(t, []byte{0x02, 0x03, 0x00}, buf)
+
+	require.Equal(t, uint32(1), mem.Size())
+	require.Equal(t, uint32(1), mem.Grow(3))
+	require.Equal(t, uint32(4), mem.Size())
 }

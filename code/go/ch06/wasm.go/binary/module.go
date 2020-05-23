@@ -32,6 +32,10 @@ const (
 	ExportTagMem    = 2
 	ExportTagGlobal = 3
 )
+const (
+	PageSize     = 65536 // 64KB
+	MaxPageCount = 65536 // 2^16
+)
 
 type (
 	TypeIdx   = uint32

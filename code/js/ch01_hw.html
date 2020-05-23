@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+  </head>
+  <body>
+    <script>
+      var str = "";
+      var importObj = {env: {
+          print_char: (c) => {
+            str += String.fromCharCode(c);
+            if (c == 10) {
+              alert(str);
+            }
+          }
+      }};
+      fetch('ch01_hw.wasm').then(response =>
+          response.arrayBuffer()
+      ).then(buffer =>
+          WebAssembly.instantiate(buffer, importObj)
+      ).then(({module, instance}) =>
+          instance.exports.main()
+      );
+    </script>
+  </body>
+</html>

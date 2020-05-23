@@ -1,0 +1,68 @@
+$ wasm-objdump -x code/js/ch01_hw.wasm 
+
+ch01_hw.wasm:	file format wasm 0x1
+
+Section Details:
+
+Type[5]:
+ - type[0] (i32) -> nil
+ - type[1] () -> nil
+ - type[2] (i32, i32) -> i32
+ - type[3] (i32) -> i32
+ - type[4] (i32, i32, i32) -> nil
+Import[1]:
+ - func[0] sig=0 <print_char> <- env.print_char
+Function[11]:
+ - func[1] sig=1 <main>
+ - func[2] sig=2 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$12wrapping_add17h804b98cc596b4beaE>
+ - func[3] sig=2 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$15wrapping_offset17h15f931fc13aca864E>
+ - func[4] sig=2 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$3add17h2957673ffa7fb5dcE>
+ - func[5] sig=2 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$6offset17h9773484c37f3cdc3E>
+ - func[6] sig=3 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$7is_null17hab6a48c9c6634120E>
+ - func[7] sig=2 <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$3len17h7d755ec5a1795ddbE>
+ - func[8] sig=4 <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$4iter17h90193f7fe9cb8be6E>
+ - func[9] sig=2 <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$6as_ptr17hcf74385c24d97857E>
+ - func[10] sig=4 <_ZN4core5slice87_$LT$impl$u20$core..iter..traits..collect..IntoIterator$u20$for$u20$$RF$$u5b$T$u5d$$GT$9into_iter17h662a6b4ca30f6fdaE>
+ - func[11] sig=3 <_ZN85_$LT$core..slice..Iter$LT$T$GT$$u20$as$u20$core..iter..traits..iterator..Iterator$GT$4next17h1023e5bd6414a678E>
+Table[1]:
+ - table[0] type=funcref initial=1 max=1
+Memory[1]:
+ - memory[0] pages: initial=17
+Global[3]:
+ - global[0] i32 mutable=1 - init i32=1048576
+ - global[1] i32 mutable=0 <__data_end> - init i32=1048590
+ - global[2] i32 mutable=0 <__heap_base> - init i32=1048590
+Export[4]:
+ - memory[0] -> "memory"
+ - global[1] -> "__data_end"
+ - global[2] -> "__heap_base"
+ - func[1] <main> -> "main"
+Code[11]:
+ - func[1] size=234 <main>
+ - func[2] size=19 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$12wrapping_add17h804b98cc596b4beaE>
+ - func[3] size=47 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$15wrapping_offset17h15f931fc13aca864E>
+ - func[4] size=19 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$3add17h2957673ffa7fb5dcE>
+ - func[5] size=47 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$6offset17h9773484c37f3cdc3E>
+ - func[6] size=37 <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$7is_null17hab6a48c9c6634120E>
+ - func[7] size=47 <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$3len17h7d755ec5a1795ddbE>
+ - func[8] size=219 <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$4iter17h90193f7fe9cb8be6E>
+ - func[9] size=5 <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$6as_ptr17hcf74385c24d97857E>
+ - func[10] size=102 <_ZN4core5slice87_$LT$impl$u20$core..iter..traits..collect..IntoIterator$u20$for$u20$$RF$$u5b$T$u5d$$GT$9into_iter17h662a6b4ca30f6fdaE>
+ - func[11] size=319 <_ZN85_$LT$core..slice..Iter$LT$T$GT$$u20$as$u20$core..iter..traits..iterator..Iterator$GT$4next17h1023e5bd6414a678E>
+Data[1]:
+ - segment[0] memory=0 size=14 - init i32=1048576
+  - 0100000: 4865 6c6c 6f2c 2057 6f72 6c64 210a       Hello, World!.
+Custom:
+ - name: "name"
+ - func[0] <print_char>
+ - func[1] <main>
+ - func[2] <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$12wrapping_add17h804b98cc596b4beaE>
+ - func[3] <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$15wrapping_offset17h15f931fc13aca864E>
+ - func[4] <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$3add17h2957673ffa7fb5dcE>
+ - func[5] <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$6offset17h9773484c37f3cdc3E>
+ - func[6] <_ZN4core3ptr33_$LT$impl$u20$$BP$const$u20$T$GT$7is_null17hab6a48c9c6634120E>
+ - func[7] <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$3len17h7d755ec5a1795ddbE>
+ - func[8] <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$4iter17h90193f7fe9cb8be6E>
+ - func[9] <_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$6as_ptr17hcf74385c24d97857E>
+ - func[10] <_ZN4core5slice87_$LT$impl$u20$core..iter..traits..collect..IntoIterator$u20$for$u20$$RF$$u5b$T$u5d$$GT$9into_iter17h662a6b4ca30f6fdaE>
+ - func[11] <_ZN85_$LT$core..slice..Iter$LT$T$GT$$u20$as$u20$core..iter..traits..iterator..Iterator$GT$4next17h1023e5bd6414a678E>

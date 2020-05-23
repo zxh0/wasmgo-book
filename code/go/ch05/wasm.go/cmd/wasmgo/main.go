@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"wasm.go/binary"
+	"wasm.go/interpreter"
 )
 
 func main() {
@@ -24,5 +25,7 @@ func main() {
 
 	if *dumpFlag {
 		dump(module)
+	} else {
+		interpreter.ExecMainFunc(module)
 	}
 }

@@ -11,6 +11,12 @@ const (
 	ValTypeF32 ValType = 0x7D // f32
 	ValTypeF64 ValType = 0x7C // f64
 
+	BlockTypeI32   BlockType = -1  // ()->(i32)
+	BlockTypeI64   BlockType = -2  // ()->(i64)
+	BlockTypeF32   BlockType = -3  // ()->(f32)
+	BlockTypeF64   BlockType = -4  // ()->(f64)
+	BlockTypeEmpty BlockType = -64 // ()->()
+
 	FtTag   = 0x60
 	FuncRef = 0x70
 

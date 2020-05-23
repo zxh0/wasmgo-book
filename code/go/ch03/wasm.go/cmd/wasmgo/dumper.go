@@ -140,6 +140,7 @@ func (d *dumper) dumpCodeSec() {
 			}
 		}
 		fmt.Println("]")
+		d.dumpExpr("    ", code.Expr)
 	}
 }
 
@@ -154,5 +155,30 @@ func (d *dumper) dumpCustomSec() {
 	fmt.Printf("Custom[%d]:\n", len(d.module.CustomSecs))
 	for i, cs := range d.module.CustomSecs {
 		fmt.Printf("  custom[%d]: name=%s\n", i, cs.Name) // TODO
+	}
+}
+
+func (d *dumper) dumpExpr(indentation string, expr binary.Expr) {
+	for _, instr := range expr {
+		switch instr.Opcode {
+		case binary.Block, binary.Loop:
+			args := instr.Args.(binary.BlockArgs)
+			bt := d.module.GetBlockType(args.BT)
+			fmt.Printf("%s%s %s\n", indentation, instr.GetOpname(), bt)
+			d.dumpExpr(indentation+"  ", args.Instrs)
+			fmt.Printf("%s%s\n", indentation, "end")
+		case binary.If:
+			args := instr.Args.(binary.IfArgs)
+			bt := d.module.GetBlockType(args.BT)
+			fmt.Printf("%s%s %s\n", indentation, "if", bt)
+			d.dumpExpr(indentation+"  ", args.Instrs1)
+			fmt.Printf("%s%s\n", indentation, "else")
+			d.dumpExpr(indentation+"  ", args.Instrs2)
+			fmt.Printf("%s%s\n", indentation, "end")
+		default:
+			if instr.Args != nil {
+				fmt.Printf("%s%s %v\n", indentation, instr.GetOpname(), instr.Args)
+			}
+		}
 	}
 }

@@ -9,6 +9,7 @@ import (
 func newEnv() instance.Module {
 	env := instance.NewNativeInstance()
 	env.RegisterFunc("print_char(i32)->()", printChar)
+	env.RegisterFunc("print_i64(i64)->()", printI64)
 	env.RegisterFunc("assert_true(i32)->()", assertTrue)
 	env.RegisterFunc("assert_false(i32)->()", assertFalse)
 	env.RegisterFunc("assert_eq_i32(i32,i32)->()", assertEqI32)
@@ -20,6 +21,10 @@ func newEnv() instance.Module {
 
 func printChar(args []interface{}) ([]interface{}, error) {
 	fmt.Printf("%c", args[0].(int32))
+	return nil, nil
+}
+func printI64(args []interface{}) ([]interface{}, error) {
+	fmt.Printf("%d\n", args[0].(int64))
 	return nil, nil
 }
 

@@ -1,0 +1,7 @@
+[package]
+name = "rust_examples"
+version = "0.1.0"
+edition = "2018"
+
+[profile.release]
+#opt-level = 0

@@ -1,0 +1,11 @@
+(module
+  (import "env" "assert_eq_i32" (func $assert_eq_i32 (param i32 i32)))
+  (import "env" "assert_eq_i64" (func $assert_eq_i64 (param i64 i64)))
+  (start $main)
+  (func $main (export "main")
+    (call $assert_eq_i32 (i32.clz (i32.const 0xFF00)) (i32.const 16))
+    (call $assert_eq_i32 (i32.ctz (i32.const 0xFF00)) (i32.const 8 ))
+    (call $assert_eq_i64 (i64.clz (i64.const 0xFF00)) (i64.const 48))
+    (call $assert_eq_i64 (i64.ctz (i64.const 0xFF00)) (i64.const 8 ))
+  )
+)

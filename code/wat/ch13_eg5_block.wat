@@ -1,0 +1,11 @@
+(module
+  (func $test (result i32)
+    (block $b1 (result i32)
+      (block $b2 (result i32)
+        (block $b3 (result i32)
+          (i32.const 123) (i32.const 456) (br_if $b1)
+        )
+      )
+    )
+  )
+)

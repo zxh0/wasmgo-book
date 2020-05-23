@@ -1,0 +1,22 @@
+(module
+  (import "env" "assert_eq_i64" (func $assert_eq_i64 (param i64 i64)))
+  (start $main)
+  (func $main (export "main")
+    (i32.const 12) (i32.const 34)
+    (i64.const 56) (i64.const 78)
+    (call $max)
+    (drop) (drop) (drop)
+    (call $assert_eq_i64 
+      (i64.const 78) 
+      (call $max (i64.const 56) (i64.const 78))
+    )
+  )
+  (func $max (param $a i64) (param $b i64) (result i64)
+    (local $c i32)
+
+    (local.get $a) (local.get $b)
+    (local.get $a) (local.get $b)
+    (i64.gt_s)
+    (select)
+  )
+)

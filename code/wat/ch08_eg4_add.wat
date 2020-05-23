@@ -1,0 +1,13 @@
+(module
+  (import "env" "assert_eq_i64" (func $assert_eq_i64 (param i64 i64)))
+  (start $main)
+  (func $main (export "main")
+    (call $assert_eq_i64 (call $add (i64.const 123) (i64.const 456)) (i64.const 579))
+  )
+  (func $add (param $a i64) (param $b i64) (result i64)
+    (local.get $a) (local.get $b)
+    (block (param i64 i64) (result i64)
+      (i64.add)
+    )
+  )
+)

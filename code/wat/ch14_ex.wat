@@ -16,7 +16,7 @@
     (block (result i64 i64)
       (block (result i32)
         (try
-          (call $f1)
+          (do (call $f1))
           (catch
             (br_on_exn 1 $x1) ;; --+
             (br_on_exn 2 $x2) ;; --|--+

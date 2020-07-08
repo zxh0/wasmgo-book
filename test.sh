@@ -11,7 +11,7 @@ rm -f *.wasm
 for f in *.wat ; do
   if ! [[ $f =~ "ch14" ]] ; then 
     # echo "wat2wasm $f"
-    wat2wasm --enable-multi-value --enable-sign-extension --enable-saturating-float-to-int "$f"
+    wat2wasm "$f"
   else
     wat2wasm --enable-all "$f"
   fi
